@@ -1,0 +1,37 @@
+Visualization:
+
+	Youtube videos  - good, intuitive, in-depth 
+	https://youtu.be/aircAruvnKk
+	
+	Online e-book
+	http://neuralnetworksanddeeplearning.com/
+	
+	Neural network made by google - Can understand hyper-parameter tuning
+	playground.tensorflow.org
+
+Implementation
+	
+	Implement a 3-layer Neural Network from scratch using only numpy and matplotlib
+	Generalize to an N-layer Neural Network
+	
+	Example: https://github.com/llSourcell/Make_a_neural_network/blob/master/demo.py	
+
+	Implement handwriting recognition using the MNIST dataset
+	http://yann.lecun.com/exdb/mnist/
+	1 - Use your own neural network (do not use sklearn)
+
+	Learn basics of sklearn from the docs
+	https://scikit-image.org/docs/stable/
+	https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html (Neural Network Classifier)
+	https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html  (Neural Network Regressor)
+
+	2 - Re-implement using sklearn's NN
+
+Genetic Algorithms 
+	
+	https://lethain.com/genetic-algorithms-cool-name-damn-simple/
+
+	https://github.com/yugrocks/Genetic-Neural-Network
+
+	https://github.com/shahril96/neural-network-with-genetic-algorithm-optimizer
+	
