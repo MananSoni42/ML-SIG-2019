@@ -39,7 +39,7 @@ Learn about the following terminologies:
 - DEADLINE :: *13^{th} June 2019 (Wednesday)*
 ** Merge [[https://github.com/MananSoni42/ML-SIG-2019][this]] repository into your fork/clone
  [[https://help.github.com/en/articles/merging-an-upstream-repository-into-your-fork][Github Merging into fork]]
-** Solve this notebook
+** Solve [[https://github.com/MananSoni42/ML-SIG-2019/blob/master/GA%2520and%2520NN/GA_task.ipynb][this]] notebook
 Implement a GA to extremize a polynomial within range.
 
 * Neural Networks
@@ -51,10 +51,11 @@ https://youtu.be/aircAruvnKk
 http://neuralnetworksanddeeplearning.com/
 
 ** Neural network made by google - Can understand hyper-parameter tuning
-[[Playground.tensorflow.org][Tensorflow Playground]]
+[[http://playground.tensorflow.org][Tensorflow Playground]]
 
 * Task 2
-** Solve fill and solve this file
+DEADLINE :: 20^{th} June 2019
+** Solve fill and solve [[https://github.com/MananSoni42/ML-SIG-2019/blob/master/GA%2520and%2520NN/neural_net.py][this]] file
 *** Resources:
 - https://youtu.be/aircAruvnKk
 - http://neuralnetworksanddeeplearning.com/
