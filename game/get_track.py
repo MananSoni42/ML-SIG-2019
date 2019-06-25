@@ -41,7 +41,11 @@ final_im =np.array(morphology.skeletonize_3d(im)).astype(int)
 
 # Get the x and y co-ordinates (numpy and PIL have transpose conventions)
 y,x = np.where(final_im==255)
-
+y = y[np.argsort(x)]
+x = np.sort(x)
+y_max = np.max(y)
+x = scale(x,0,1)
+y = scale(y,0,1)
 # Divide the y values into upper and lower parts of the track
 x_final = []
 y_up = []
