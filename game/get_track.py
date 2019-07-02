@@ -14,7 +14,6 @@ scale = lambda arr,min,max: min + (max-min)*(arr-np.min(arr))/(np.max(arr)-np.mi
 # lambda function get a PIL image from an array
 get = lambda arr: Image.fromarray(scale(arr,0,255))
 
-# use commmand line arguements for image path
 try:
     path = sys.argv[1]
     out_file = sys.argv[2]
@@ -74,6 +73,6 @@ with open(out_file,'w') as f:
 
 # Plot the track using matplotlib
 plt.title('Visualization of track')
-plt.scatter(x_final,y_down,color='r')
-plt.scatter(x_final,y_up,color='b')
+plt.plot(x_final,y_down,color='r')
+plt.plot(x_final,y_up,color='b')
 plt.show()
