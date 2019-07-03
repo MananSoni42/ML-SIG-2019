@@ -60,7 +60,7 @@ class car_animation(pyglet.window.Window):
 
 
     # utility to read csv track files into numpy arrays
-    def read_track(self,in_file='sample_path.csv',scale=[1000,600]):
+    def read_track(self,in_file='tracks/ample_path.csv',scale=[1000,600]):
         x = []
         y1 = []
         y2 = []

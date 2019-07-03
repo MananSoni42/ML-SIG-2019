@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from pprint import pprint
 
 # utility to read csv track files into numpy arrays
-def read_track(in_file='sample_path.csv', scale=[1000,600]):
+def read_track(in_file='tracks/sample_path.csv', scale=[1000,600]):
     x = []
     y1 = []
     y2 = []
@@ -69,7 +69,7 @@ class car:
             self.accl = np.array([0.01,5])
         else:
             self.accl = np.array([0.01,5])
-        """    
+        """
         # Approach 3
         """
         if du > 100:
@@ -108,6 +108,27 @@ class car:
         self.accl_history.append(np.copy(self.accl))
         # plt.scatter(self.get_surrounding(),50,color='y')
 
+    def plot_history(self):
+        plt.plot(self.track[0], self.track[1], c="k")
+        plt.plot(self.track[0], self.track[2], c="k")
+        plt.plot(*zip(*self.pos_history))
+
+        plt.gca().set_xlim(-10,1010)
+        plt.gca().set_ylim(-10,610)
+        plt.show()
+
+    def utility(self):
+        """
+        Utility(): returns the utility of the car
+        Returns: max_dist,time
+            max_dist: maximum distance travelled by the car
+            time: time taken to finish the track (-1 if car did not reach the end)
+        """
+        x_pos = np.array(self.pos_history)[:,0]
+        max_dist = np.max(x_pos)
+        time =  np.argmax(x_pos) if max_dist >= self.end-2 else -1
+        return max_dist,time
+
     def get_surrounding(self):
         if np.linalg.norm(self.vel) != 0:
             v1 = normalize(self.vel)
@@ -140,21 +161,13 @@ class car:
             except ValueError:
                 dists[i] = self.max_dist
         return dists
-
 """
-track = read_track('test_2.csv')
+track = read_track()
 my_car1 = car(track)
-#my_car1.accl = np.array((0.0, 0.0))
-#my_car1.vel = np.array((15.0, 0.0))
 
 for i in range(5000):
     my_car1.run()
 
-plt.plot(track[0], track[1], c="k")
-plt.plot(track[0], track[2], c="k")
-plt.plot(*zip(*my_car1.pos_history))
-
-plt.gca().set_xlim(-10,1010)
-plt.gca().set_ylim(-10,1010)
-plt.show()
+my_car1.plot_history()
+print(my_car1.utility())
 """
