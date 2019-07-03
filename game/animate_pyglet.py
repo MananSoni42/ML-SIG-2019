@@ -30,11 +30,12 @@ class car_animation(pyglet.window.Window):
             for i in range(self.num_cars):
                 car_paths.append('cars/car_yellow.png')
 
-        self.total_time = 10
+        self.total_time = 60
         self.fps = 100
         self.time = 0
         self.width = 1000
         self.height = 600
+        self.cars = cars
 
         self.drawableObjects = []
         self.track = None
@@ -97,7 +98,7 @@ class car_animation(pyglet.window.Window):
         # Add cars
         for i in range(self.num_cars):
             car_img = pyglet.image.load(car_paths[i])
-            car_img.anchor_x = car_img.width // 2
+            car_img.anchor_x = car_img.width
             car_img.anchor_y = car_img.height // 2
             carSprite = pyglet.sprite.Sprite(car_img)
             carSprite.scale_x = float(50/car_img.width)

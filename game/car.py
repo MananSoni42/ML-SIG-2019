@@ -19,7 +19,6 @@ def read_track(in_file='tracks/sample_path.csv', scale=[1000,600]):
             y2.append(float(row[2]))
     return scale[0] * np.array(x), scale[1] * np.array(y1), scale[1]*np.array(y2)
 
-
 def normalize(v):
     norm = np.linalg.norm(v)
     if norm == 0:
@@ -35,11 +34,12 @@ class car:
             np.interp(x, self.track[0], self.track[1]),
             np.interp(x, self.track[0], self.track[2]),
         )
-        #self.pos = np.array((track[0][0], (track[1][0] + track[2][0]) / 2))
-        self.pos = np.array((track[0][0], track[1][0]+10))
+        self.pos = np.array((track[0][0], (track[1][0] + track[2][0]) / 2))
+        #self.pos = np.array((track[0][0], track[1][0]+10))
         self.max_dist = 1000
         self.accl = np.zeros((2,))
         self.vel = np.zeros((2,))
+        self.last_vel = np.zeros((2,))
         self.max_vel = np.array([25, 25])
         self.last_pos = np.zeros((2,))
         self.pos_history = [np.copy(self.pos)]
@@ -49,47 +49,40 @@ class car:
 
     def is_legal(self):
         t = self.track_at(self.pos[0])
-        return (t[0] < self.pos[1] < t[1]) and (self.pos[0] < self.end)
+        return (t[0] < self.pos[1] < t[1]) and (0 < self.pos[0] < self.end)
 
     def get_rot_mat(self, th):
         return np.array([[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]])
 
-    def accl_function(self, dists):
-        du, dd, _, _ = dists
-        #TODO
+    def accl_function(self, params):
+        dist = params[:4]
+        du, dd, _, _ = dist
+        last_dist = params[4:8]
+        last_vel = params[8:10]
 
-        # Approach 1
-        self.accl = np.array([0.01,(du-dd)/(du+dd)])
+        self.accl[0] = 0.1
+        #self.accl[1] = (dd-du)/(du+dd)
+        self.accl[1] = (1+du)/(1+dd)-1
 
-        #Approach 2
-        """
-        if dd > 100:
-            self.accl = np.array([0.01,-0.1])
-        elif 30 < dd <= 100:
-            self.accl = np.array([0.01,5])
-        else:
-            self.accl = np.array([0.01,5])
-        """
-        # Approach 3
-        """
-        if du > 100:
-            self.accl = np.array([0.01,0.2])
-        elif 30 < du <= 100:
-            self.accl = np.array([0.01,-1])
-        else:
-            self.accl = np.array([0.01,-3])
-        """
+        if dist[0] < 200 or dist[2] < 200:
+            self.accl[1] -= 0.2
+
+        if dist[1] < 200 or dist[3] < 200:
+            self.accl[1] += 0.2
+
     def run(self):
-        self.accl_function(self.get_surrounding())
+        dist = self.get_surrounding(self.pos,self.vel)
+        last_dist = self.get_surrounding(self.last_pos,self.last_vel)
+        params = [*dist,*last_dist,*self.last_vel]
+        self.accl_function(params)
         self.update()
 
     def update(self):
         self.last_pos = np.copy(self.pos)
+        self.last_vel = np.copy(self.vel)
 
         if self.vel[0] > self.max_vel[0]:
             self.vel[0] = self.max_vel[0]
-        if self.vel[0] < 0:
-            self.vel[0] = 0
         if self.vel[1] > self.max_vel[1]:
             self.vel[1] = self.max_vel[1]
         if self.vel[1] < -self.max_vel[1]:
@@ -129,9 +122,9 @@ class car:
         time =  np.argmax(x_pos) if max_dist >= self.end-2 else -1
         return max_dist,time
 
-    def get_surrounding(self):
-        if np.linalg.norm(self.vel) != 0:
-            v1 = normalize(self.vel)
+    def get_surrounding(self,pos,vel):
+        if np.linalg.norm(vel) != 0:
+            v1 = normalize(vel)
             rot_matrix = np.array([v1, [-v1[1], v1[0]]]).T
         else:
             rot_matrix = np.eye(2)
@@ -140,7 +133,7 @@ class car:
 
         xvals = np.arange(self.track[0].shape[0])
         vision_tensor = rotated_eyes * xvals[:, np.newaxis, np.newaxis]
-        vision_tensor += np.expand_dims(self.pos, 1).T
+        vision_tensor += np.expand_dims(pos, 1).T
 
         dists = np.zeros(self.eyes.shape[0])
         for i in range(self.eyes.shape[0]):
@@ -157,7 +150,7 @@ class car:
                 #plt.scatter(*vision_tensor[idx,i].reshape(2,))
 
             try:
-                dists[i] = np.sqrt(np.sum(np.square(vision_tensor[idx,i].reshape(2,)-self.pos.reshape(2,))))
+                dists[i] = np.sqrt(np.sum(np.square(vision_tensor[idx,i].reshape(2,)-pos.reshape(2,))))
             except ValueError:
                 dists[i] = self.max_dist
         return dists

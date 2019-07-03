@@ -10,6 +10,6 @@ for i in range(2000):
     my_car.run()
 
 my_car.plot_history()
-print(my_car.utility())
+#print(my_car.utility())
 
-#animate_cars([my_car],track_path=track_path)
+animate_cars([my_car],track_path=track_path)
