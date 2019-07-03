@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from pprint import pprint
 
 # utility to read csv track files into numpy arrays
-def read_track(in_file='sample_path.csv', scale=1000):
+def read_track(in_file='sample_path.csv', scale=[1000,600]):
     x = []
     y1 = []
     y2 = []
@@ -17,7 +17,7 @@ def read_track(in_file='sample_path.csv', scale=1000):
             x.append(float(row[0]))
             y1.append(float(row[1]))
             y2.append(float(row[2]))
-    return scale * np.array(x), scale * np.array(y1), scale * np.array(y2)
+    return scale[0] * np.array(x), scale[1] * np.array(y1), scale[1]*np.array(y2)
 
 
 def normalize(v):
@@ -55,10 +55,30 @@ class car:
         return np.array([[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]])
 
     def accl_function(self, dists):
-        #TODO
         du, dd, _, _ = dists
+        #TODO
+
+        # Approach 1
         self.accl = np.array([0.01,(du-dd)/(du+dd)])
 
+        #Approach 2
+        """
+        if dd > 100:
+            self.accl = np.array([0.01,-0.1])
+        elif 30 < dd <= 100:
+            self.accl = np.array([0.01,5])
+        else:
+            self.accl = np.array([0.01,5])
+        """    
+        # Approach 3
+        """
+        if du > 100:
+            self.accl = np.array([0.01,0.2])
+        elif 30 < du <= 100:
+            self.accl = np.array([0.01,-1])
+        else:
+            self.accl = np.array([0.01,-3])
+        """
     def run(self):
         self.accl_function(self.get_surrounding())
         self.update()
@@ -97,7 +117,7 @@ class car:
         # 2 is the num of dimensions
         rotated_eyes = self.eyes.dot(rot_matrix.T)
 
-        xvals = np.arange(track[0].shape[0])
+        xvals = np.arange(self.track[0].shape[0])
         vision_tensor = rotated_eyes * xvals[:, np.newaxis, np.newaxis]
         vision_tensor += np.expand_dims(self.pos, 1).T
 
@@ -106,13 +126,13 @@ class car:
             # take upper track if line of vision is above 0
             if self.eyes[i][1] > 0:
                 # find point on vision_tensor closest to track
-                idx = np.argwhere(np.diff(np.sign(vision_tensor[:,i,1] - track[2]))).flatten()
+                idx = np.argwhere(np.diff(np.sign(vision_tensor[:,i,1] - self.track[2]))).flatten()
                 #plt.scatter(*vision_tensor[idx,i].reshape(2,))
 
             # else take lower track
             else:
                 # find point on vision_tensor closest to track
-                idx = np.argwhere(np.diff(np.sign(vision_tensor[:,i,1] - track[1]))).flatten()
+                idx = np.argwhere(np.diff(np.sign(vision_tensor[:,i,1] - self.track[1]))).flatten()
                 #plt.scatter(*vision_tensor[idx,i].reshape(2,))
 
             try:
@@ -121,7 +141,8 @@ class car:
                 dists[i] = self.max_dist
         return dists
 
-track = read_track('test_2.csv',scale=1000)
+"""
+track = read_track('test_2.csv')
 my_car1 = car(track)
 #my_car1.accl = np.array((0.0, 0.0))
 #my_car1.vel = np.array((15.0, 0.0))
@@ -136,3 +157,4 @@ plt.plot(*zip(*my_car1.pos_history))
 plt.gca().set_xlim(-10,1010)
 plt.gca().set_ylim(-10,1010)
 plt.show()
+"""
