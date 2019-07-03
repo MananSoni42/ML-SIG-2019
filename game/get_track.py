@@ -45,6 +45,7 @@ x = np.sort(x)
 y_max = np.max(y)
 x = scale(x,0,1)
 y = scale(y,0,1)
+
 # Divide the y values into upper and lower parts of the track
 x_final = []
 y_up = []
@@ -69,7 +70,7 @@ x_final = x_final[:-win+1]
 with open(out_file,'w') as f:
     writer = csv.writer(f)
     for i in range(len(x_final)):
-        writer.writerow([x[i],y_down[i],y_up[i]])
+        writer.writerow([x_final[i],y_down[i],y_up[i]])
 
 # Plot the track using matplotlib
 plt.title('Visualization of track')
