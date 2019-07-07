@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 track_path = "tracks/test_4.csv"
 track = read_track(track_path)
-epochs = 5
+epochs = 15
 iter = 1000
 num_cars = 36
 fig_size = (6,6)

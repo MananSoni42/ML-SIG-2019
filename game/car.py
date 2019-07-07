@@ -77,7 +77,7 @@ class Car:
     def run(self,**kwargs):
         dist = self.get_surrounding(self.pos, self.vel)
         last_dist = self.get_surrounding(self.last_pos, self.last_vel)
-        params = np.array([*dist,*last_dist,*self.last_vel])
+        params = np.array([*dist,*self.vel,*last_dist,*self.last_vel,])
         self.accl = self.accl_function(params,**kwargs)
         self.update()
         return params
