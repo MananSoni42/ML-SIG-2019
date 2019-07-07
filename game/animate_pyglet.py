@@ -24,11 +24,14 @@ class car_animation(pyglet.window.Window):
 
         self.num_cars = num_cars
 
-        # assign default car for all cars if not specified
+        # assign random cars for all cars if not specified
+
         if car_paths is None:
+            cols = ['blue','orange','yellow','purple']
             car_paths = []
             for i in range(self.num_cars):
-                car_paths.append('cars/car_yellow.png')
+                ind = np.random.randint(len(cols))
+                car_paths.append(f'cars/car_{cols[ind]}.png')
 
         self.total_time = 60
         self.fps = 100

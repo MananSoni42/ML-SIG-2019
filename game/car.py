@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import numpy as np
-from PIL import Image
 import sys
 import csv
 import matplotlib.pyplot as plt
@@ -27,7 +26,7 @@ def normalize(v):
     return v / norm
 
 
-class car:
+class Car:
     def __init__(self, track, accl_function):
         self.accl_function = accl_function
         self.eyes = np.array([[0, 1], [0, -1], [1, 1], [1, -1]])
@@ -36,7 +35,8 @@ class car:
             np.interp(x, self.track[0], self.track[1]),
             np.interp(x, self.track[0], self.track[2]),
         )
-        self.pos = np.array((track[0][0], (track[1][0] + track[2][0]) / 2))
+        self.pos = np.array((track[0][0]+1,
+                            np.random.uniform((track[1][0]+track[2][0])/4, 3*(track[1][0]+track[2][0])/4)))
         # self.pos = np.array((track[0][0], track[1][0]+10))
         self.max_dist = 1000
         self.accl = np.zeros((2,))
@@ -88,11 +88,12 @@ class car:
 
         if self.vel[0] > self.max_vel[0]:
             self.vel[0] = self.max_vel[0]
+        if self.vel[0] < 0:
+            self.vel[0] = 0
         if self.vel[1] > self.max_vel[1]:
             self.vel[1] = self.max_vel[1]
         if self.vel[1] < -self.max_vel[1]:
             self.vel[1] = -self.max_vel[1]
-
         self.pos += self.vel
         if self.is_legal():
             self.vel += self.accl
@@ -110,6 +111,8 @@ class car:
         plt.plot(self.track[0], self.track[1], c="k")
         plt.plot(self.track[0], self.track[2], c="k")
         plt.plot(*zip(*self.pos_history))
+        plt.gca().set_xlim(-10, 1010)
+        plt.gca().set_ylim(-10, 610)
 
     def utility(self):
         """
@@ -161,15 +164,3 @@ class car:
             except ValueError:
                 dists[i] = self.max_dist
         return dists
-
-
-"""
-track = read_track()
-my_car1 = car(track)
-
-for i in range(5000):
-    my_car1.run()
-
-my_car1.plot_history()
-print(my_car1.utility())
-"""
