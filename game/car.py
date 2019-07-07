@@ -74,12 +74,13 @@ class car:
 
         return np.array(accl)
 
-    def run(self):
+    def run(self,**kwargs):
         dist = self.get_surrounding(self.pos, self.vel)
         last_dist = self.get_surrounding(self.last_pos, self.last_vel)
-        # params = [*dist,*last_dist,*self.last_vel]
-        self.accl = self.accl_function(dist, last_dist, self.vel, self.last_vel)
+        params = np.array([*dist,*last_dist,*self.last_vel])
+        self.accl = self.accl_function(params,**kwargs)
         self.update()
+        return params
 
     def update(self):
         self.last_pos = np.copy(self.pos)
@@ -109,10 +110,6 @@ class car:
         plt.plot(self.track[0], self.track[1], c="k")
         plt.plot(self.track[0], self.track[2], c="k")
         plt.plot(*zip(*self.pos_history))
-
-        plt.gca().set_xlim(-10, 1010)
-        plt.gca().set_ylim(-10, 610)
-        plt.show()
 
     def utility(self):
         """
