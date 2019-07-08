@@ -35,8 +35,14 @@ class Car:
             np.interp(x, self.track[0], self.track[1]),
             np.interp(x, self.track[0], self.track[2]),
         )
-        self.pos = np.array((track[0][0]+1,
-                            np.random.uniform((track[1][0]+track[2][0])/4, 3*(track[1][0]+track[2][0])/4)))
+        self.pos = np.array(
+            (
+                track[0][0] + 1,
+                np.random.uniform(
+                    (track[1][0] + track[2][0]) / 4, 3 * (track[1][0] + track[2][0]) / 4
+                ),
+            )
+        )
         # self.pos = np.array((track[0][0], track[1][0]+10))
         self.max_dist = 1000
         self.accl = np.zeros((2,))
@@ -56,10 +62,11 @@ class Car:
     def get_rot_mat(self, th):
         return np.array([[np.cos(th), -np.sin(th)], [np.sin(th), np.cos(th)]])
 
-    def default_accl_function(
-        distances, last_distances, current_velocity, previous_velocity
-    ):
+    def default_accl_function(params, **kwargs):
+        distances = params[:4]
         du, dd, _, _ = distances
+        last_dist = params[4:8]
+        last_vel = params[8:10]
         accl = [0, 0]
         accl[0] = 0.1  # Accel along x axis
 
@@ -74,11 +81,11 @@ class Car:
 
         return np.array(accl)
 
-    def run(self,**kwargs):
+    def run(self, **kwargs):
         dist = self.get_surrounding(self.pos, self.vel)
         last_dist = self.get_surrounding(self.last_pos, self.last_vel)
-        params = np.array([*dist,*self.vel,*last_dist,*self.last_vel,])
-        self.accl = self.accl_function(params,**kwargs)
+        params = np.array([*dist, *self.vel, *last_dist, *self.last_vel])
+        self.accl = self.accl_function(params, **kwargs)
         self.update()
         return params
 
