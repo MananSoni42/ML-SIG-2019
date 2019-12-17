@@ -1,6 +1,3 @@
--   **DEADLINE:** 24^{th} July 2019
-
-
 # Racing cars
 
 For your final task, you have to program a car which can maneuver a given track!
